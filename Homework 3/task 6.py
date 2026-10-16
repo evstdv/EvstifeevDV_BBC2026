@@ -145,11 +145,11 @@ def generate_line(size):
         chance = random.randint(0, 100)
         if chance <= 35:
             line.append(EMPTY)
-        elif chance <= 45:
+        elif chance <= 50:
             line.append(MONSTER)
-        elif chance <= 70:
+        elif chance <= 65:
             line.append(KEY)
-        elif chance <= 95:
+        elif chance <= 80:
             line.append(CHEST)
         else:
             line.append(TRAP)
@@ -354,9 +354,10 @@ def event_chest(player, dungeon):
 
 def use_map(player, dungeon):
     print("Вы посмотрели на старую карту")
-    for _ in range(size):
+    for _ in range(dungeon.size):
         x, y = random.randint(0, dungeon.size - 1), random.randint(0, dungeon.size - 1)
-        dungeon.hidden_map[x][y] = dungeon.true_map[x][y]
+        dungeon.visible_map[x][y] = ICONS[dungeon.true_map[x][y]]
+    dungeon.print_dungeon()
         
 def use_sword(player, dungeon):
     print("Ваш урон увеличен")
@@ -370,6 +371,7 @@ def use_potion(player, dungeon):
             
 def main():
     size = 8
+    lvl = 0
     player  = Player(size)
     dungeon = Dungeon(player.x, player.y, size)
 
@@ -379,7 +381,11 @@ def main():
     
     while True:
         if player.exit == True:
+            lvl += 1
             player.exit = False
+            if lvl == 3:
+                print("\n\n\nВы прошли игру!!!!")
+                break
             print("\nВы на новом этаже.")
             
             dungeon = Dungeon(player.x, player.y, size)
