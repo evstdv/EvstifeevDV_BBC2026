@@ -61,35 +61,47 @@ class MainWindow(QWidget):
 
         # 1) Поле для ввода 1
         self.field_top = QLineEdit(self)
-        self.field_top.setPlaceholderText("Введите номер карты")
+        self.field_top.setPlaceholderText("Введите 16-значный код доступа")
         self.field_top.setFixedHeight(50)
         self.field_top.setStyleSheet(field_style)
 
         # 2) Выпадающий список 1
         self.combo_left = QComboBox(self)
-        self.combo_left.addItems([str(i) if i >= 10 else '0' + str(i) for i in range(1, 32)])
+        self.combo_left.addItems([str(i) if i >= 10 else '0' + str(i) for i in range(1, 13)])
         self.combo_left.setFixedHeight(50)
         self.combo_left.setStyleSheet(combo_style)
         # 3) Выпадающий список 2
         self.combo_right = QComboBox(self)
-        self.combo_right.addItems([str(i) if i >= 10 else '0' + str(i) for i in range(0, 31)])
+        self.combo_right.addItems([str(i) if i >= 10 else '0' + str(i) for i in range(0, 40)])
         self.combo_right.setFixedHeight(50)
         self.combo_right.setStyleSheet(combo_style)
 
         spin_row = QHBoxLayout()
         spin_row.setSpacing(20)
-        spin_row.addWidget(QLabel("Месяц:"), 0)
+        spin_row.addWidget(QLabel("Действителен до Месяц:"), 0)
         spin_row.addWidget(self.combo_left, 1)
         spin_row.addWidget(QLabel("Год:"), 0)
         spin_row.addWidget(self.combo_right, 1)
 
-        # 3) Поле ввола 2
+        # Поле ввода 2
         self.field_mid = QLineEdit(self)
-        self.field_mid.setPlaceholderText("Введите код CVC")
+        self.field_mid.setPlaceholderText("Введите 6-значный код активации")
         self.field_mid.setFixedHeight(50)
         self.field_mid.setStyleSheet(field_style)
 
-        # 4) Кнопка проверки
+        # Поле ввода имени
+        self.field_name = QLineEdit(self)
+        self.field_name.setPlaceholderText("Введите имя")
+        self.field_name.setFixedHeight(50)
+        self.field_name.setStyleSheet(field_style)
+
+        # Поле ввода фамилии
+        self.field_surname = QLineEdit(self)
+        self.field_surname.setPlaceholderText("Введите фамилию")
+        self.field_surname.setFixedHeight(50)
+        self.field_surname.setStyleSheet(field_style)
+
+        # Кнопка проверки
         self.btn = QPushButton("Ввести", self)
         self.btn.setFixedHeight(50)
         self.btn.setFixedWidth(200)
@@ -111,7 +123,7 @@ class MainWindow(QWidget):
         btn_row.addWidget(self.btn)
         btn_row.addStretch(1)
 
-        # --- Нижняя панель ---
+        # Нижняя панель 
         self.bottom_panel = BottomPanel(self)
 
 
@@ -122,6 +134,10 @@ class MainWindow(QWidget):
         v.addLayout(spin_row)
         v.addWidget(self.field_mid)
         v.addSpacing(10)
+        v.addWidget(self.field_name)
+        v.addSpacing(10)
+        v.addWidget(self.field_surname)
+        v.addSpacing(10)
         v.addLayout(btn_row)
         v.addSpacing(10)
         v.addWidget(self.bottom_panel)  
@@ -129,13 +145,21 @@ class MainWindow(QWidget):
 
     def on_submit(self):
         if len(self.field_top.text()) != 16:
-            QMessageBox.warning(self, "Ошибка", "Номер карты набран неверно - количество символов не равно 16")
+            QMessageBox.warning(self, "Ошибка", "Код доступа набран неверно - количество символов не равно 16")
         elif not (self.field_top.text()).isdigit():
-            QMessageBox.warning(self, "Ошибка","Номер карты набран неверно - не все символы являются цифрами")
-        elif len(self.field_mid.text()) != 3:
-            QMessageBox.warning(self, "Ошибка","Код CVC набран неверно - количество символов не равно 3")
+            QMessageBox.warning(self, "Ошибка","Код доступа набран неверно - не все символы являются цифрами")
+        elif len(self.field_mid.text()) != 6:
+            QMessageBox.warning(self, "Ошибка","Код активации набран неверно - количество символов не равно 6")
         elif not (self.field_mid.text()).isdigit():
-            QMessageBox.warning(self, "Ошибка","Код CVC набран неверно - не все символы являются цифрами")
+            QMessageBox.warning(self, "Ошибка","Код активации набран неверно - не все символы являются цифрами")
+        elif len(self.field_name.text()) <= 0:
+            QMessageBox.warning(self, "Ошибка","Имя набрано неверно - количество символов равно 0")
+        elif not (self.field_name.text()).isalpha():
+            QMessageBox.warning(self, "Ошибка","Имя набран неверно - не все символы являются буквами")
+        elif len(self.field_surname.text()) <= 0:
+            QMessageBox.warning(self, "Ошибка","Фамилия набрана неверно - количество символов равно 0")
+        elif not (self.field_surname.text()).isalpha():
+            QMessageBox.warning(self, "Ошибка","Фамилия набрана неверно - не все символы являются буквами")
         else:
             self.bottom_panel.show()
 
